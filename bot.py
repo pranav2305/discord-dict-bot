@@ -24,14 +24,19 @@ async def on_message(message):
 
     msg = message.content
 
-    if msg.startswith("/dict"):
+    if msg.startswith("/mean"):
         l = msg.split()
         if not l[1]:
-            await message.channel.send("***Please enter atleast 1 word after '/dict'***")
+            await message.channel.send("***Please enter atleast 1 word after '/mean'***")
         else:
+            final_msg = ""
             for word in l[1:]:
                 res = requests.get(DICT_API + word)
                 res_json = json.loads(res.text)
+                if type(res_json) == dict:
+                    final_msg += f"***No results for {word}***\n\n" + \
+                        "----------\n"
+                    continue
                 dict_msg = f"**Word\t:\t{word.lower().capitalize()}**\n\n**Meanings**\n"
                 for index, meaning in enumerate(res_json[0]["meanings"]):
                     dict_msg += \
@@ -40,30 +45,41 @@ async def on_message(message):
                         f"    ***Definition*** : {meaning['definitions'][0]['definition']}\n"
                     dict_msg += \
                         f"    ***Example*** : {meaning['definitions'][0]['example'].replace('hello', '__hello__')}\n\n"
-
-                await message.channel.send(dict_msg)
+                final_msg += dict_msg + "----------\n"
+            await message.channel.send(final_msg)
 
     if msg.startswith("/phon"):
         l = msg.split()
         if not l[1]:
             await message.channel.send("***Please enter atleast 1 word after '/phon'***")
         else:
+            final_msg = ""
             for word in l[1:]:
                 res = requests.get(DICT_API + word)
                 res_json = json.loads(res.text)
+                if type(res_json) == dict:
+                    final_msg += f"***No results for {word}***\n\n" + \
+                        "----------\n"
+                    continue
                 dict_msg = f"**Word\t:\t{word.lower().capitalize()}**\n\n**Phonetics**\n"
                 dict_msg += f"***Text*** : {res_json[0]['phonetic']}\n"
-                dict_msg += f"***Audio*** : {res_json[0]['phonetics'][0]['audio']}\n"
-                await message.channel.send(dict_msg)
+                dict_msg += f"***Audio*** : {res_json[0]['phonetics'][0]['audio']}\n\n"
+                final_msg += dict_msg + "----------\n"
+            await message.channel.send(final_msg)
 
     if msg.startswith("/syn"):
         l = msg.split()
         if not l[1]:
             await message.channel.send("***Please enter atleast 1 word after '/syn'***")
         else:
+            final_msg = ""
             for word in l[1:]:
                 res = requests.get(DICT_API + word)
                 res_json = json.loads(res.text)
+                if type(res_json) == dict:
+                    final_msg += f"***No results for {word}***\n\n" + \
+                        "----------\n"
+                    continue
                 dict_msg = f"**Word\t:\t{word.lower().capitalize()}**\n\n**Synonyms**\n"
                 index = 1
                 for meaning in res_json[0]["meanings"]:
@@ -86,18 +102,24 @@ async def on_message(message):
                         index += 1
 
                 if index == 1:
-                    dict_msg += f"***No synonyms found for {word}***"
+                    dict_msg += f"***No synonyms found for {word}***\n\n"
 
-                await message.channel.send(dict_msg)
+                final_msg += dict_msg + "----------\n"
+            await message.channel.send(final_msg)
 
     if msg.startswith("/ant"):
         l = msg.split()
         if not l[1]:
             await message.channel.send("***Please enter atleast 1 word after '/ant'***")
         else:
+            final_msg = ""
             for word in l[1:]:
                 res = requests.get(DICT_API + word)
                 res_json = json.loads(res.text)
+                if type(res_json) == dict:
+                    final_msg += f"***No results for {word}***\n\n" + \
+                        "----------\n"
+                    continue
                 dict_msg = f"**Word\t:\t{word.lower().capitalize()}**\n\n**Antonyms**\n"
                 index = 1
                 for meaning in res_json[0]["meanings"]:
@@ -120,8 +142,27 @@ async def on_message(message):
                         index += 1
 
                 if index == 1:
-                    dict_msg += f"***No antonyms found for {word}***"
+                    dict_msg += f"***No antonyms found for {word}***\n\n"
 
-                await message.channel.send(dict_msg)
+                final_msg += dict_msg + "----------\n"
+            await message.channel.send(final_msg)
+
+    if msg.startswith("/dict"):
+        final_msg = """
+
+        **Dictionary Menu**
+
+        1. '***/mean*** <word 1> <word 2> ...' - Gives the part of __*speech, definition and examples*__.
+
+        2. '***/phon*** <word 1> <word 2> ...' - Gives the __*phonetics text and audio*__.
+
+        3. '***/syn*** <word 1> <word 2> ...'  - Gives the __*part of speech and the synonyms*__ under them.
+
+        4. '***/ant*** <word 1> <word 2> ...'  - Gives the __*part of speech and the antonyms*__ under them.
+
+        ---------
+
+        """
+    await message.channel.send(final_msg)
 
 client.run(TOKEN)
