@@ -25,21 +25,21 @@ A discord dictionary bot that gives the part of speech, definition, examples, or
 ## Samples
 
 1. Command : **/mean hello world**
-   ![Output for "/mean hello world"](.images/1)
+   ![Output for "/mean hello world"](./images/1.png)
    <br>
 2. Command : **/org helLo WorLd**
-   ![Output for "/mean hello world"](.images/2)
+   ![Output for "/mean hello world"](./images/2.png)
    <br>
 3. Command : **/phon i like cars**
-   ![Output for "/mean hello world"](.images/3)
+   ![Output for "/mean hello world"](./images/3.png)
    <br>
 4. Command : **/syn adfe walk rat**
-   ![Output for "/mean hello world"](.images/4)
+   ![Output for "/mean hello world"](./images/4.png)
    <br>
 5. Command : **/ant happy feet**
-   ![Output for "/mean hello world"](.images/5)
+   ![Output for "/mean hello world"](./images/5.png)
    <br>
 6. Command : **/dict riddle me this**
-   ![Output for "/mean hello world"](.images/6_1)
-   ![Output for "/mean hello world"](.images/6_2)
-   ![Output for "/mean hello world"](.images/6_3)
+   ![Output for "/mean hello world"](./images/6_1.png)
+   ![Output for "/mean hello world"](./images/6_2.png)
+   ![Output for "/mean hello world"](./images/6_3.png)
