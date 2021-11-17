@@ -4,6 +4,7 @@ import discord
 import requests
 import json
 from dotenv import load_dotenv
+from server import server
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -26,8 +27,10 @@ def getMeaning(res_json):
             f"{index+1}. ***Part of Speech*** : {meaning['partOfSpeech']}\n"
         new_msg += \
             f"    ***Definition*** : {meaning['definitions'][0]['definition']}\n"
-        new_msg += \
-            f"    ***Example*** : {meaning['definitions'][0]['example'].replace('hello', '__hello__')}\n\n"
+        replaceText = f"__*{res_json[0]['word']}*__"
+        if "example" in meaning['definitions'][0]:
+            new_msg += \
+                f"    ***Example*** : {meaning['definitions'][0]['example'].replace(res_json[0]['word'], replaceText)}\n\n"
     return new_msg
 
 # Function to get phonetics from the json object
@@ -74,7 +77,10 @@ def getSynonyms(res_json):
 
 def getOrigin(res_json):
     new_msg = ""
-    new_msg += f"***Origin*** : {res_json[0]['origin']}\n\n"
+    if "origin" in res_json[0]:
+        new_msg += f"***Origin*** : {res_json[0]['origin']}\n\n"
+    else:
+        new_msg = f"***No origin found for {res_json[0]['word'].capitalize()}***\n\n"
     return new_msg
 
 # Function to get antonyms from the json object
@@ -113,22 +119,28 @@ def getAntonyms(res_json):
 def getData(func, data, msg):
     l = msg.split()
     if not l[1]:
-        return "***Please enter atleast 1 word after '/mean'***"
+        return ["***Please enter atleast 1 word after '/mean'***"]
     else:
-        final_msg = ""
+        msgs = []
         for word in l[1:]:
             res = requests.get(DICT_API + word)
             res_json = json.loads(res.text)
-            final_msg += f"**Word\t:\t{word.lower().capitalize()}**\n\n**{data}**\n"
+            final_msg = f"**Word\t:\t{word.lower().capitalize()}**\n\n**{data}**\n"
             if type(res_json) == dict:
                 final_msg += f"***No results for {word}***\n\n"
             else:
                 final_msg += func(res_json)
             final_msg += "----------\n"
-        return final_msg
+            if not msgs:
+                msgs.append(final_msg)
+            elif len(final_msg) + len(msgs[-1]) < 2000:
+                msgs[-1] += final_msg
+            else:
+                msgs.append(final_msg)
+        return msgs
 
 
-@client.event
+@ client.event
 async def on_message(message):
     if message.author == client.user:
         return
@@ -136,28 +148,33 @@ async def on_message(message):
     msg = message.content
 
     if msg.startswith("/mean"):
-        await message.channel.send(getData(getMeaning, "Meaning", msg))
+        for m in getData(getMeaning, "Meaning", msg):
+            await message.channel.send(m)
 
     if msg.startswith("/phon"):
-        await message.channel.send(getData(getPhonetics, "Phonetics", msg))
+        for m in getData(getMeaning, "Meaning", msg):
+            await message.channel.send(m)
 
     if msg.startswith("/syn"):
-        await message.channel.send(getData(getSynonyms, "Synonyms", msg))
+        for m in getData(getMeaning, "Meaning", msg):
+            await message.channel.send(m)
 
     if msg.startswith("/ant"):
-        await message.channel.send(getData(getAntonyms, "Antonyms", msg))
+        for m in getData(getMeaning, "Meaning", msg):
+            await message.channel.send(m)
 
     if msg.startswith("/org"):
-        await message.channel.send(getData(getOrigin, "Origin", msg))
+        for m in getData(getMeaning, "Meaning", msg):
+            await message.channel.send(m)
 
     if msg.startswith("/dict"):
         l = msg.split()
         if not l[1]:
             await message.channel.send("***Please enter atleast 1 word after '/ant'***")
         else:
-            final_msg = ""
+            msgs = []
             for word in l[1:]:
-                final_msg += f"**Word\t:\t{word.lower().capitalize()}**\n\n"
+                final_msg = f"**Word\t:\t{word.lower().capitalize()}**\n\n"
                 res = requests.get(DICT_API + word)
                 res_json = json.loads(res.text)
                 if type(res_json) == dict:
@@ -174,7 +191,14 @@ async def on_message(message):
                     final_msg += "**Antonyms**\n"
                     final_msg += getAntonyms(res_json)
                 final_msg += "----------\n"
-            await message.channel.send(final_msg)
+                if not msgs:
+                    msgs.append(final_msg)
+                elif len(final_msg) + len(msgs[-1]) < 2000:
+                    msgs[-1] += final_msg
+                else:
+                    msgs.append(final_msg)
+            for m in msgs:
+                await message.channel.send(m)
 
     if msg.startswith("/help"):
         final_msg = """
@@ -182,21 +206,22 @@ async def on_message(message):
         **Dictionary Menu**
                     -*Pranav Agarwal*
 
-        1. '***/mean*** <word 1> <word 2> ...' - Gives the part of __*speech, definition and examples*__.
+        1. '***/mean*** <word1> <word2> ...' - Gives the __*part of speech, definition and examples*__.
 
-        2. '***/org*** <word 1> <word 2> ...'  - Gives the __*origin*__ of the words.
+        2. '***/org*** <word1> <word2> ...'  - Gives the __*origin*__ of the words.
 
-        3. '***/phon*** <word 1> <word 2> ...' - Gives the __*phonetics text and audio*__.
+        3. '***/phon*** <word1> <word2> ...' - Gives the __*phonetics text and audio*__.
 
-        4. '***/syn*** <word 1> <word 2> ...'  - Gives the __*part of speech and the synonyms*__ under them.
+        4. '***/syn*** <word1> <word2> ...'  - Gives the __*part of speech and the synonyms*__ under them.
 
-        5. '***/ant*** <word 1> <word 2> ...'  - Gives the __*part of speech and the antonyms*__ under them.
+        5. '***/ant*** <word1> <word2> ...'  - Gives the __*part of speech and the antonyms*__ under them.
 
-        6. '***/dict*** <word 1> <word 2> ...' - Gives the __*meaning, origin, phonetics, synonyms and antonyms*__.
+        6. '***/dict*** <word1> <word2> ...' - Gives the __*meaning, origin, phonetics, synonyms and antonyms*__.
 
         ---------
 
         """
         await message.channel.send(final_msg)
 
+server()
 client.run(TOKEN)
