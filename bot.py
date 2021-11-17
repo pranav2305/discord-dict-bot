@@ -16,6 +16,8 @@ client = discord.Client()
 async def on_ready():
     print(f'{client.user} has connected to Discord!')
 
+# Function to get all the meanings from the json object
+
 
 def getMeaning(res_json):
     new_msg = ""
@@ -28,12 +30,16 @@ def getMeaning(res_json):
             f"    ***Example*** : {meaning['definitions'][0]['example'].replace('hello', '__hello__')}\n\n"
     return new_msg
 
+# Function to get phonetics from the json object
+
 
 def getPhonetics(res_json):
     new_msg = ""
     new_msg += f"***Text*** : {res_json[0]['phonetic']}\n"
     new_msg += f"***Audio*** : {res_json[0]['phonetics'][0]['audio']}\n\n"
     return new_msg
+
+# Function to get synonyms from the json object
 
 
 def getSynonyms(res_json):
@@ -63,11 +69,15 @@ def getSynonyms(res_json):
 
     return new_msg
 
+# Function to get the origin from the json object
+
 
 def getOrigin(res_json):
     new_msg = ""
     new_msg += f"***Origin*** : {res_json[0]['origin']}\n\n"
     return new_msg
+
+# Function to get antonyms from the json object
 
 
 def getAntonyms(res_json):
@@ -97,6 +107,8 @@ def getAntonyms(res_json):
 
     return new_msg
 
+# Function to get all the data from the json object
+
 
 def getData(func, data, msg):
     l = msg.split()
@@ -111,7 +123,7 @@ def getData(func, data, msg):
             if type(res_json) == dict:
                 final_msg += f"***No results for {word}***\n\n"
             else:
-                final_msg += getMeaning(res_json)
+                final_msg += func(res_json)
             final_msg += "----------\n"
         return final_msg
 
