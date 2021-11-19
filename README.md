@@ -11,16 +11,16 @@ A discord dictionary bot that gives the part of speech, definition, examples, or
 
 ## Commands
 
-| Command                       | Function                                                             |
-| ----------------------------- | -------------------------------------------------------------------- |
-| **/mean** <word1> <word2> ... | Gives the _part of speech, definition and examples._                 |
-| **/org** <word1> <word2> ...  | Gives the _origin_ of the words.                                     |
-| **/phon** <word1> <word2> ... | Gives the _phonetics text and audio_.                                |
-| **/syn** <word1> <word2> ...  | Gives the _part of speech and the synonyms_ under them.              |
-| **/ant** <word1> <word2> ...  | Gives the _part of speech and the antonyms_ under them.              |
-| **/dict** <word1> <word2> ... | Gives the _short meaning, origin, phonetics, synonyms and antonyms_. |
-| **/menu**                     | Gives the menu for the dictionary bot                                |
-| **/slang**                    | Gives the _meaning and example_ for slangs.                          |
+| Command                              | Function                                                             |
+| ------------------------------------ | -------------------------------------------------------------------- |
+| **/mean** `<word1>` `/<word2/>` ...  | Gives the _part of speech, definition and examples._                 |
+| **/org** `<word1>` `/<word2/>` ...   | Gives the _origin_ of the words.                                     |
+| **/phon** `<word1>` `/<word2/>` ...  | Gives the _phonetics text and audio_.                                |
+| **/syn** `<word1>` `/<word2/>` ...   | Gives the _part of speech and the synonyms_ under them.              |
+| **/ant** `<word1>` `/<word2/>` ...   | Gives the _part of speech and the antonyms_ under them.              |
+| **/dict** `<word1>` `/<word2/>` ...  | Gives the _short meaning, origin, phonetics, synonyms and antonyms_. |
+| **/slang** `<word1>` `/<word2/>` ... | Gives the _meaning and example_ for slangs.                          |
+| **/menu**                            | Gives the _menu_ for the dictionary bot                              |
 
 <br>
 

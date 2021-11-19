@@ -33,11 +33,12 @@ def getShortMeaning(res_json):
                 index += 1
                 pos.append(meaning['partOfSpeech'])
                 new_msg += \
-                    f"    ***Definition*** : {meaning['definitions'][0]['definition']}\n"
+                    f"    ***Definition*** : {meaning['definitions'][0]['definition']}"
                 replaceText = f"__*{res_json[0]['word']}*__"
                 if "example" in meaning['definitions'][0]:
                     new_msg += \
-                        f"    ***Example*** : {meaning['definitions'][0]['example'].replace(res_json[0]['word'], replaceText)}\n\n"
+                        f"\n    ***Example*** : {meaning['definitions'][0]['example'].replace(res_json[0]['word'], replaceText)}"
+                new_msg += "\n\n"
     return new_msg
 
 # Function to get all the meanings from the json object
@@ -56,11 +57,12 @@ def getLongMeaning(res_json):
                 pos.append(meaning['partOfSpeech'])
                 for i, defn in enumerate(meaning['definitions']):
                     new_msg += \
-                        f"    ({chr(ord('a') + i)}.) ***Definition*** : {defn['definition']}\n"
+                        f"    ({chr(ord('a') + i)}.) ***Definition*** : {defn['definition']}"
                     replaceText = f"__*{res_json[0]['word']}*__"
                     if "example" in meaning['definitions'][0]:
                         new_msg += \
-                            f"          ***Example*** : {meaning['definitions'][0]['example'].replace(res_json[0]['word'], replaceText)}\n\n"
+                            f"\n          ***Example*** : {meaning['definitions'][0]['example'].replace(res_json[0]['word'], replaceText)}"
+                    new_msg += "\n\n"
     return new_msg
 
 # Function to get phonetics from the json object
@@ -179,10 +181,11 @@ def getData(func, data, msg):
         for word in l[1:]:
             res = requests.get(DICT_API + word)
             res_json = json.loads(res.text)
-            final_msg = f"**Word\t:\t{word.lower().capitalize()}**\n\n**{data}**\n"
             if type(res_json) == dict:
+                final_msg = f"**Word\t:\t{word.lower().capitalize()}**\n\n**{data}**\n"
                 final_msg += f"***No results for {word}***\n\n"
             else:
+                final_msg = f"**Word\t:\t{res_json[0]['word'].lower().capitalize()}**\n\n**{data}**\n"
                 final_msg += func(res_json)
             final_msg += "----------\n"
             if not msgs:
@@ -202,19 +205,19 @@ def getMenu():
 
 1. '***/mean*** <word1> <word2> ...' - Gives the __*part of speech, definition and examples*__.
 
-2. '***/org*** <word1> <word2> ...'  - Gives the __*origin*__ of the words.
+2. '***/org*** <word1> <word2> ...' - Gives the __*origin*__ of the words.
 
 3. '***/phon*** <word1> <word2> ...' - Gives the __*phonetics text and audio*__.
 
-4. '***/syn*** <word1> <word2> ...'  - Gives the __*part of speech and the synonyms*__ under them.
+4. '***/syn*** <word1> <word2> ...' - Gives the __*part of speech and the synonyms*__ under them.
 
-5. '***/ant*** <word1> <word2> ...'  - Gives the __*part of speech and the antonyms*__ under them.
+5. '***/ant*** <word1> <word2> ...' - Gives the __*part of speech and the antonyms*__ under them.
 
 6. '***/dict*** <word1> <word2> ...' - Gives the __*short meaning, origin, phonetics, synonyms and antonyms*__.
 
 7. '***/slang*** <word1> <word2> ...' - Gives the __*meaning and example*__ for slangs.
 
-8. '***/menu***'\t\t\t\t\t\t\t\t\t- Gives the menu for the dictionary bot.
+8. '***/menu***' - Gives the __*menu*__ for the dictionary bot.
 
 ---------
 
@@ -255,12 +258,13 @@ async def on_message(message):
         else:
             msgs = []
             for word in l[1:]:
-                final_msg = f"**Word\t:\t{word.lower().capitalize()}**\n\n"
                 res = requests.get(DICT_API + word)
                 res_json = json.loads(res.text)
                 if type(res_json) == dict:
+                    final_msg = f"**Word\t:\t{word.lower().capitalize()}**\n\n"
                     final_msg += f"***No results for {word}***\n\n"
                 else:
+                    final_msg = f"**Word\t:\t{res_json[0]['word'].lower().capitalize()}**\n\n"
                     final_msg += "**Meaning**\n"
                     final_msg += getShortMeaning(res_json)
                     final_msg += "**Origin**\n"
@@ -290,8 +294,13 @@ async def on_message(message):
             for word in l[1:]:
                 res = requests.get(SLANG_API + word)
                 res_json = json.loads(res.text)
-                final_msg = f"**Word\t:\t{word.lower().capitalize()}**\n"
-                final_msg += getSlang(res_json) + "----------\n\n"
+                if res_json['list']:
+                    final_msg = f"**Word\t:\t{res_json['list'][0]['word'].lower().capitalize()}**\n\n"
+                    final_msg += getSlang(res_json)
+                else:
+                    final_msg = f"**Word\t:\t{word.lower().capitalize()}**\n\n"
+                    final_msg += f"***No results for {word}***\n\n"
+                final_msg += "----------\n\n"
                 if not msgs:
                     msgs.append(final_msg)
                 elif len(final_msg) + len(msgs[-1]) < 2000:
@@ -305,6 +314,7 @@ async def on_message(message):
         await message.channel.send(getMenu())
 
 
+@client.event
 async def on_guild_join(guild):
     for channel in guild.text_channels:
         if channel.permissions_for(guild.me).send_messages:
