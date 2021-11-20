@@ -294,7 +294,7 @@ async def on_message(message):
             for word in l[1:]:
                 res = requests.get(SLANG_API + word)
                 res_json = json.loads(res.text)
-                if res_json['list']:
+                if "list" in res_json and res_json['list']:
                     final_msg = f"**Word\t:\t{res_json['list'][0]['word'].lower().capitalize()}**\n\n"
                     final_msg += getSlang(res_json)
                 else:
