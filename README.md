@@ -1,12 +1,31 @@
-# Dictionary Bot 📚
+# Task ID: Discord Dictionary Bot 📚
 
 ##### -Pranav Agarwal
 
 <br>
 
+## How to use
+
+- Click on the link provided below and login wih your discord account.
+- Select the server/guild you want to add the bot to.
+- Click on authorize to authorize the bot
+- The bot will send the menu to the first text channel it is authorized for.
+- The bot is ready for use.
+  <br>
+  **Link** : https://bit.ly/3nqGiPW
+
+  <br>
+
+## Tech Used
+- **Python** to make the discord bot.
+- **Flask** server to keep the discord bot running.
+- **[Repl.it](https://replit.com/)** to deploy the flask server.
+- **[Uptime Robot](https://uptimerobot.com/)** to keep pinging the flask server so that Repl.it does not put it to sleep.
+
 ## About
 
 A discord dictionary bot that gives the part of speech, definition, examples, origin, phonetics, synonyms and antonyms. This bot can take multiple inputs and gives the output for all the words after the command in a single message. A flask server is created to upload the discord bot on Repl.it and an uptime bot is used to ping the server every 5 minutes to ensure that the server does'nt go to sleep and the discord bot can be used anytime. The bot also checks if the message is more than 2000 (discord text limit) and splits the message and sends it accordingly. The bot shows the Menu when it is added to a new guild.
+
 <br>
 
 ## Commands
@@ -60,14 +79,19 @@ A discord dictionary bot that gives the part of speech, definition, examples, or
    <br>
    ![Output for "/slang wbu smh macha"](./images/7.png)
    <br>
+
    <br>
 
-## How to use
+## Demo Video
 
-- Click on the link provided below and login wih your discord account.
-- Select the server/guild you want to add the bot to.
-- Click on authorize to authorize the bot
-- The bot will send the menu to the first text channel it is authorized for.
-- The bot is ready for use.
-  <br>
-  **Link** : https://bit.ly/3nqGiPW
+Link: https://youtu.be/ToOyw1xy8OQ
+
+<br>
+
+## References
+
+1. [Python Discord bots](https://realpython.com/how-to-make-a-discord-bot-python/)
+
+2. [Discord.py docs](https://discordpy.readthedocs.io/en/stable/api.html)
+
+3. [Deploying App on Repl.it](https://replit.com/talk/learn/Hosting-discordpy-bots-with-replit/11008)
